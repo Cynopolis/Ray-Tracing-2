@@ -19,8 +19,6 @@ void draw(){
 }
 
 void keyPressed(){
-  
-  /*
   if(key == 'd'){
     car.setPos((car.getPos()[0]+1), (car.getPos()[1]));
   }
@@ -34,7 +32,10 @@ void keyPressed(){
     car.setPos((car.getPos()[0]), (car.getPos()[1]+1));
   }
   if(key == 'q'){
-    car.setOrientation(car.getOrientation()+1);
+    car.setAngle(car.getAngle()+1);
   }
-  */
+  if(key == 'e'){
+    car.setAngle(car.getAngle()-1);
+  }
+  
 }

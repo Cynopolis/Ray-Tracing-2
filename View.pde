@@ -13,9 +13,9 @@ public class View{
   }
   
   public void setRayNum(int numberOfRays, float FOV, float angleOffset){
-    float rayStep = (FOV)/numberOfRays;
+    float rayStep = FOV/numberOfRays;
     rays.clear();
-    float angle = 0.01-FOV/2+angleOffset;
+    float angle = 0.01-angleOffset;
     for(int i = 0; i < numberOfRays; i++){
       Ray ray = new Ray(xPos, yPos, 100000, angle);
       angle = angle + rayStep;
@@ -37,9 +37,7 @@ public class View{
   
   public void setAngle(float angle){
     this.angle = angle;
-    for(Ray ray : rays){
-      ray.setAngle(angle);
-    }
+    this.setRayNum(rays.size(), this.FOV, angle);
   }
   
   public void setFOV(float FOV){
@@ -49,7 +47,7 @@ public class View{
   
   public int[] getPos(){return new int[] {this.xPos, this.yPos};}
   
-  public float angle(){return this.angle;}
+  public float getAngle(){return this.angle;}
   
   public float getFOV(){return this.FOV;}
   

@@ -1,7 +1,7 @@
 public class Car{
   int xPos;
   int yPos;
-  float angle = 0;
+  float angle = 0; //IN RADIANS
   int carLength;
   int carWidth;
   int xVel = 0;
@@ -20,27 +20,8 @@ public class Car{
     this.carWidth = carWidth;
   }
   
-  public void setPos(int x, int y){
-    this.xPos = x;
-    this.yPos = y;
-    pastTime = time;
-    time = millis();
-    for(View view : views){
-      view.setPos(x, y);
-    }
-  }
-  
   public void addView(float FOV, int numberOfRays){
-    views.add(new View(this.xPos, this.yPos, numberOfRays, FOV));
-  }
-  
-  public void setAngle(float angle){
-    while(angle >= 360){angle -= 360;}
-    while(angle <= -360){angle += 360;}
-    this.angle = angle;
-    for(View view : views){
-      view.setAngle(angle);
-    }
+    views.add(new View(this.xPos, this.yPos, numberOfRays, radians(FOV)));
   }
   
   public void drawCar(ArrayList<Wall> walls){
@@ -52,6 +33,7 @@ public class Car{
     for(Obstacle obstacle : obstacles){
       obstacle.drawObstacle();
     }
+    this.pointProcess();
   }
   
   void pointProcess(){
@@ -85,5 +67,31 @@ public class Car{
     return sqrt((float)(a-x)*(a-x)+(b-y)*(b-y));
   }
   
+  public int[] getPos(){
+    return new int[] {this.xPos, this.yPos};
+  }
   
+  public float getAngle(){
+    return degrees(this.angle);
+  }
+  
+  public void setAngle(float angle){
+    angle = radians(angle);
+    while(angle >= 2*PI){angle -= 2*PI;}
+    while(angle <= -2*PI){angle += 2*PI;}
+    this.angle = angle;
+    for(View view : views){
+      view.setAngle(angle);
+    }
+  }
+  
+  public void setPos(int x, int y){
+    this.xPos = x;
+    this.yPos = y;
+    pastTime = time;
+    time = millis();
+    for(View view : views){
+      view.setPos(x, y);
+    }
+  }
 }
