@@ -139,10 +139,11 @@ class Ray{
     else{return false;}
   }
   
+  //returns the absolute position of the point
   public int[] getPoint(){
     if(this.rayLength != this.defaultRayLength){
-      int x = rayLength * (int)cos(this.angle);
-      int y = rayLength * (int)sin(this.angle);
+      int x = rayLength * (int)cos(this.angle) + this.xPos;
+      int y = rayLength * (int)sin(this.angle) + this.yPos;
       return new int[] {x, y};
     }
     else{

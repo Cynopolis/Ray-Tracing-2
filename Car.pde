@@ -44,15 +44,11 @@ public class Car{
     }
   }
   
-  //find the distance between (a,b) and (x,y).
-  private float getDistance(int a, int b, int x, int y){
-    return sqrt((float)(a-x)*(a-x)+(b-y)*(b-y));
-  }
-  
   public int[] getPos(){
     return new int[] {this.xPos, this.yPos};
   }
   
+  //always returns a positive angle between 0 and 360 degrees
   public float getAngle(){
     return degrees(this.angle);
   }
@@ -76,8 +72,5 @@ public class Car{
     for(View view : views){
       view.setPos(x, y);
     }
-  }
-  
-  public void drive(int[] target){
   }
 }
