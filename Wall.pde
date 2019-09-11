@@ -3,9 +3,9 @@ public class Wall{
   int yPos;
   float angle;
   int wallLength;
-  int r = (int)random(30, 255);
-  int g = (int)random(30, 255);
-  int b = (int)random(30, 255);
+  int r = (int)random(50, 255);
+  int g = (int)random(50, 255);
+  int b = (int)random(50, 255);
   
   Wall(int xPos, int yPos, float angle, int wallLength){
     this.xPos = xPos;

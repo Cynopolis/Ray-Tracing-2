@@ -3,7 +3,7 @@ ArrayList<Wall> objects = new ArrayList<Wall>();
 
 void setup(){
   size(1000, 1000);
-  car.addView(60,60);
+  car.addView(60,6);
   for(int i = 0; i < 20; i++){
     Wall wall = new Wall((int)random(40, 1840), (int)random(40, 960), (int)random(360), (int)random(100, 1000));
     objects.add(wall);
@@ -16,6 +16,7 @@ void draw(){
     object.drawWall();
   }
   car.drawCar(objects);
+  //car.drive(new int[] {0, 0});
 }
 
 void keyPressed(){

@@ -5,6 +5,7 @@ public class View{
   float FOV;
   ArrayList<Ray> rays = new ArrayList<Ray>();
   
+  //the x,y position of the view, what angle it's looking at and its FOV
   View(int xPos, int yPos, int numberOfRays, float FOV){
     this.xPos = xPos;
     this.yPos = yPos;
@@ -12,10 +13,11 @@ public class View{
     this.setRayNum(numberOfRays, FOV, this.angle);
   }
   
+  //sets the number of rays and their starting values in the ray list
   public void setRayNum(int numberOfRays, float FOV, float angleOffset){
     float rayStep = FOV/numberOfRays;
     rays.clear();
-    float angle = 0.01-angleOffset;
+    float angle = 0.01-angleOffset; //the 0.01 fixes some bugs
     for(int i = 0; i < numberOfRays; i++){
       Ray ray = new Ray(xPos, yPos, 100000, angle);
       angle = angle + rayStep;
@@ -23,23 +25,28 @@ public class View{
     }
   }
   
+  //sees if the ray will collide with the walls in the wall list
   public void look(ArrayList<Wall> walls){
     for (Ray ray : rays){
       ray.castRay(walls);
+      ray.drawRay();
     }
   }
   
+  //changes the position of the view
   public void setPos(int x, int y){
     this.xPos = x;
     this.yPos = y;
     for(Ray ray : rays){ray.setPos(x, y);}
   }
   
+  //changes the angle of the view
   public void setAngle(float angle){
     this.angle = angle;
     this.setRayNum(rays.size(), this.FOV, angle);
   }
   
+  //changes the field of view of the view
   public void setFOV(float FOV){
     this.FOV = FOV;
     this.setRayNum(this.rays.size(), this.FOV, this.angle);
@@ -53,6 +60,7 @@ public class View{
   
   public int getRayNum(){return this.rays.size();}
   
+  //gets the point that each ray has collided with
   public ArrayList<int[]> getPoints(){
     ArrayList<int[]> points = new ArrayList<int[]>();
     
@@ -70,8 +78,9 @@ class Ray{
   int yPos;
   int rayLength;
   int defaultRayLength;
-  float angle;
+  float angle; // IN RADIANS
   
+  //takes the starting position of the ray, the length of the ray, and it's casting angle (radians)
   Ray(int xPos, int yPos, int defaultRayLength, float angle){
     this.xPos = xPos;
     this.yPos = yPos;
@@ -80,14 +89,13 @@ class Ray{
     this.angle = angle;
   }
   
-  public void castRay(ArrayList<Wall> walls){
-    this.rayLength = defaultRayLength;
-    this.collission(walls);
+  public void drawRay(){
     line(xPos, yPos, (xPos + cos(angle)*rayLength), (yPos + sin(angle)*rayLength));
   }
   
   //checks to see at what coordinate the ray will collide with an object and sets the ray length to meet that point.
-  private void collission(ArrayList<Wall> objects){
+  private void castRay(ArrayList<Wall> objects){
+    this.rayLength = defaultRayLength;
     ArrayList<Integer> distances = new ArrayList<Integer>();
     //sees what objects it collides with
     for(Wall object : objects){
@@ -117,7 +125,7 @@ class Ray{
         }
       }
     }
-    else{this.rayLength = defaultRayLength;}
+    else this.rayLength = defaultRayLength;
   }
   
   public int[] getPos(){ return new int[] {xPos, yPos};}
