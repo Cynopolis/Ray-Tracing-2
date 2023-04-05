@@ -1,37 +1,38 @@
 public class Car{
-  int xPos;
-  int yPos;
-  float angle = 0; //IN RADIANS
-  int carLength;
-  int carWidth;
+  PVector pose = new PVector(0,0); // the car's x, y position
+  float angle = 0; // the current angle that the car is at.
+  int carLength = 50;
+  int carWidth = 40;
   
   ArrayList<View> views = new ArrayList<View>();
-  ArrayList<int[]> points = new ArrayList<int[]>();
+  ArrayList<PVector> points = new ArrayList<PVector>();
+  
+  // default constructor
+  Car(){}
   
   Car(int xPos, int yPos, int carLength, int carWidth){
-    this.xPos = xPos;
-    this.yPos = yPos;
+    this.pose = new PVector(xPos, yPos);
     this.carLength = carLength;
     this.carWidth = carWidth;
   }
   
   //adds a new view with the specified FOV and ray number
   public void addView(float FOV, int numberOfRays){
-    views.add(new View(this.xPos, this.yPos, numberOfRays, radians(FOV)));
+    views.add(new View(pose, numberOfRays, radians(FOV)));
   }
   
   //draw the car and its views
   public void drawCar(ArrayList<Wall> walls){
     stroke(255);
-    ellipse(xPos, yPos, carWidth, carLength);
+    ellipse(pose.x, pose.y, carWidth, carLength);
     this.updateViews(walls);
   }
   
   //add the points that each view can currently see to the list of points
   void seePoints(){
     for(View view : views){
-      ArrayList<int[]> pointList = view.getPoints();
-      for(int[] point : pointList){
+      ArrayList<PVector> pointList = view.getPoints();
+      for(PVector point : pointList){
         points.add(point);
       }
     }
@@ -44,8 +45,8 @@ public class Car{
     }
   }
   
-  public int[] getPos(){
-    return new int[] {this.xPos, this.yPos};
+  public PVector getPose(){
+    return pose;
   }
   
   //always returns a positive angle between 0 and 360 degrees
@@ -66,11 +67,10 @@ public class Car{
     return;
   }
   
-  public void setPos(int x, int y){
-    this.xPos = x;
-    this.yPos = y;
+  public void setPose(PVector newPose){
+    pose = newPose;
     for(View view : views){
-      view.setPos(x, y);
+      view.setPos(pose);
     }
   }
 }

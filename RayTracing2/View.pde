@@ -1,14 +1,12 @@
 public class View{
-  int xPos;
-  int yPos;
+  PVector pose;
   float angle = 0;
   float FOV;
   ArrayList<Ray> rays = new ArrayList<Ray>();
   
   //the x,y position of the view, what angle it's looking at and its FOV
-  View(int xPos, int yPos, int numberOfRays, float FOV){
-    this.xPos = xPos;
-    this.yPos = yPos;
+  View(PVector newPose, int numberOfRays, float FOV){
+    this.pose = newPose;
     this.FOV = FOV;
     this.setRayNum(numberOfRays, FOV, this.angle);
   }
@@ -19,7 +17,7 @@ public class View{
     rays.clear();
     float angle = 0.01-angleOffset; //the 0.01 fixes some bugs
     for(int i = 0; i < numberOfRays; i++){
-      Ray ray = new Ray(xPos, yPos, 100000, angle);
+      Ray ray = new Ray(pose, 100000, angle);
       angle = angle + rayStep;
       rays.add(ray);
     }
@@ -34,10 +32,9 @@ public class View{
   }
   
   //changes the position of the view
-  public void setPos(int x, int y){
-    this.xPos = x;
-    this.yPos = y;
-    for(Ray ray : rays){ray.setPos(x, y);}
+  public void setPos(PVector newPose){
+    pose = newPose;
+    for(Ray ray : rays){ray.setPos(pose);}
   }
   
   //changes the angle of the view
@@ -52,7 +49,7 @@ public class View{
     this.setRayNum(this.rays.size(), this.FOV, this.angle);
   }
   
-  public int[] getPos(){return new int[] {this.xPos, this.yPos};}
+  public PVector getPos(){return pose;}
   
   public float getAngle(){return this.angle;}
   
@@ -61,11 +58,11 @@ public class View{
   public int getRayNum(){return this.rays.size();}
   
   //gets the point that each ray has collided with
-  public ArrayList<int[]> getPoints(){
-    ArrayList<int[]> points = new ArrayList<int[]>();
+  public ArrayList<PVector> getPoints(){
+    ArrayList<PVector> points = new ArrayList<PVector>();
     
     for(Ray ray : rays){
-      if(ray.getPoint() != new int[] {}){
+      if(ray.getPoint() != new PVector(0,0) {}){
         points.add(ray.getPoint());
       }
     }
@@ -74,23 +71,21 @@ public class View{
 }
 
 class Ray{
-  int xPos;
-  int yPos;
+  PVector pose;
   int rayLength;
   int defaultRayLength;
   float angle; // IN RADIANS
   
   //takes the starting position of the ray, the length of the ray, and it's casting angle (radians)
-  Ray(int xPos, int yPos, int defaultRayLength, float angle){
-    this.xPos = xPos;
-    this.yPos = yPos;
+  Ray(PVector position, int defaultRayLength, float angle){
+    this.pose = position;
     this.defaultRayLength = defaultRayLength;
     this.rayLength = defaultRayLength;
     this.angle = angle;
   }
   
   public void drawRay(){
-    line(xPos, yPos, (xPos + cos(angle)*rayLength), (yPos + sin(angle)*rayLength));
+    line(pose.x, pose.y, (pose.x + cos(angle)*rayLength), (pose.y + sin(angle)*rayLength));
   }
   
   //checks to see at what coordinate the ray will collide with an object and sets the ray length to meet that point.
@@ -101,15 +96,15 @@ class Ray{
     for(Wall object : objects){
       float theta1 = angle;
       float theta2 = radians(object.getAngle());
-      int[] wallPos = object.getPos();
+      PVector wallPos = object.getPos();
       
       //finds where along the wall the ray collides
-      float b = (xPos*sin(theta1) + wallPos[1]*cos(theta1) - yPos*cos(theta1) - wallPos[0]*sin(theta1)) / (cos(theta2)*sin(theta1) - sin(theta2)*cos(theta1));
+      float b = (pose.x*sin(theta1) + wallPos.y*cos(theta1) - pose.y*cos(theta1) - wallPos.x*sin(theta1)) / (cos(theta2)*sin(theta1) - sin(theta2)*cos(theta1));
       
       //if the place along the wall is further away than the wall extends, then it didn't collide
       if(b < object.getLength() && b > 0){
         //finds the length of the ray needed to collide with the wall
-        float a = (b*sin(theta2) + wallPos[1]-yPos) / sin(theta1);
+        float a = (b*sin(theta2) + wallPos.y-pose.y) / sin(theta1);
         //add that length to a list
         if(a > 0){
           distances.add((int)abs(a));
@@ -128,7 +123,7 @@ class Ray{
     else this.rayLength = defaultRayLength;
   }
   
-  public int[] getPos(){ return new int[] {xPos, yPos};}
+  public PVector getPos(){ return pose;}
   
   public int getRayLength(){return this.rayLength;}
   
@@ -140,20 +135,17 @@ class Ray{
   }
   
   //returns the absolute position of the point
-  public int[] getPoint(){
+  public PVector getPoint(){
     if(this.rayLength != this.defaultRayLength){
-      int x = rayLength * (int)cos(this.angle) + this.xPos;
-      int y = rayLength * (int)sin(this.angle) + this.yPos;
-      return new int[] {x, y};
+      return new PVector(rayLength * (int)cos(this.angle) + pose.x, rayLength * (int)sin(this.angle) + pose.y);
     }
     else{
-      return new int[] {};
+      return new PVector(0,0);
     }
   }
   
-  public void setPos(int x, int y){
-    this.xPos = x;
-    this.yPos = y;
+  public void setPos(PVector newPose){
+    pose = newPose;
   }
   
   public void setRayLength(int rayLength){this.rayLength = rayLength;}
