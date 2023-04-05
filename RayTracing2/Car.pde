@@ -3,6 +3,7 @@ public class Car{
   float angle = 0; // the current angle that the car is at.
   int carLength = 50;
   int carWidth = 40;
+  SLAM slam = new SLAM();
   
   ArrayList<View> views = new ArrayList<View>();
   ArrayList<PVector> points = new ArrayList<PVector>();
@@ -25,23 +26,18 @@ public class Car{
   public void drawCar(ArrayList<Wall> walls){
     stroke(255);
     ellipse(pose.x, pose.y, carWidth, carLength);
-    this.updateViews(walls);
+    this.updateScan(walls);
   }
   
-  //add the points that each view can currently see to the list of points
-  void seePoints(){
-    for(View view : views){
-      ArrayList<PVector> pointList = view.getPoints();
-      for(PVector point : pointList){
-        points.add(point);
-      }
-    }
-  }
-  
-  //updates what each ray is colliding with in each view
-  void updateViews(ArrayList<Wall> walls){
+  //With all of the views that the car has, get their point list
+  void updateScan(ArrayList<Wall> walls){
     for(View view : views){
       view.look(walls);
+    }
+    
+    for(View view : views){
+      ArrayList<PVector> pointList = view.getPoints();
+      slam.addPoints(pointList);
     }
   }
   
